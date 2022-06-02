@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-const CryptoTableRow = ({ coin }: any) => {
+const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: any) => {
     const formatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -18,7 +18,10 @@ const CryptoTableRow = ({ coin }: any) => {
     };
 
     return (
-        <div className="grid grid-cols-crypto-table justify-center items-center gap-x-5 py-4 px-2 hover:bg-gray-50 cursor-pointer">
+        <div
+            ref={lastCryptoTableRowRef}
+            className="grid grid-cols-crypto-table justify-center items-center gap-x-5 py-4 px-2 hover:bg-gray-50 cursor-pointer"
+        >
             <div className="flex flex-row">
                 <span className="hover:text-orange-400">
                     <svg

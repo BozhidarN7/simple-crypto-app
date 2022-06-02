@@ -1,9 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import fetch from 'node-fetch';
+import cors from 'cors';
 import 'dotenv/config';
 
 const app: Express = express();
 const port = process.env.PORT;
+
+app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Express + Typescript server');

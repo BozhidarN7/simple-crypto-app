@@ -1,7 +1,8 @@
 export const baseUrl = 'http://localhost:5000';
 
 const cryptocurencies = {
-    getCryptocurenciesURL: () => `${baseUrl}/cryptocurencies?limit=10`,
+    getCryptocurrenciesURL: (pageNumber: number) =>
+        `${baseUrl}/cryptocurencies?limit=${pageNumber * 10}`,
 };
 
 const routes = {

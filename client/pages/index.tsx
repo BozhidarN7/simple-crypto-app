@@ -1,15 +1,41 @@
 import Head from 'next/head';
+import { useRef, useCallback, useState } from 'react';
 
-import { getCryptocurencies } from 'services/cryptoService';
+import { getCryptocurrencies } from 'services/cryptoService';
 
 import CryptoTable from 'components/CryptoTable';
 import CryptoTableRow from 'components/CryptoTableRow';
+import useFetchCrypto from 'hooks/useFetchCrypto';
 
 type Props = {
-    cryptocurencies: any;
+    cryptocurrencies: any;
 };
 
-const Home = ({ cryptocurencies }: Props) => {
+const Home = ({ cryptocurrencies }: Props) => {
+    const [pageNumber, setPageNumber] = useState(1);
+
+    const { newCryptocurrencies, hasMore, loading, error } =
+        useFetchCrypto(pageNumber);
+
+    const observer = useRef<IntersectionObserver>();
+    const lastCryptoTableRowRef = useCallback(
+        (node: HTMLDivElement) => {
+            if (loading) return;
+            if (observer.current) observer.current.disconnect();
+
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPageNumber((prev) => prev + 1);
+                }
+            });
+
+            if (node) observer.current.observe(node);
+        },
+        [loading, hasMore]
+    );
+
+    if (!cryptocurrencies) return;
+
     return (
         <div className="flex min-h-screen flex-col items-center justify-center py-2">
             <Head>
@@ -21,9 +47,35 @@ const Home = ({ cryptocurencies }: Props) => {
                 Today's Cryptocurrency Prices by Market Cap
             </h1>
             <CryptoTable>
-                {cryptocurencies.map((coin: any) => (
-                    <CryptoTableRow key={coin.id} coin={coin} />
-                ))}
+                {pageNumber === 1
+                    ? cryptocurrencies.map((coin: any, index: number) => {
+                          if (index === cryptocurrencies.length - 1) {
+                              return (
+                                  <CryptoTableRow
+                                      key={coin.id}
+                                      coin={coin}
+                                      lastCryptoTableRowRef={
+                                          lastCryptoTableRowRef
+                                      }
+                                  />
+                              );
+                          }
+                          return <CryptoTableRow key={coin.id} coin={coin} />;
+                      })
+                    : newCryptocurrencies.map((coin: any, index: number) => {
+                          if (index === newCryptocurrencies.length - 1) {
+                              return (
+                                  <CryptoTableRow
+                                      key={coin.id}
+                                      coin={coin}
+                                      lastCryptoTableRowRef={
+                                          lastCryptoTableRowRef
+                                      }
+                                  />
+                              );
+                          }
+                          return <CryptoTableRow key={coin.id} coin={coin} />;
+                      })}
             </CryptoTable>
         </div>
     );
@@ -31,16 +83,18 @@ const Home = ({ cryptocurencies }: Props) => {
 
 export async function getStaticProps() {
     try {
-        const data = await getCryptocurencies();
+        const pageNumber = 1;
+        const data = await getCryptocurrencies(pageNumber);
+
         return {
             props: {
-                cryptocurencies: data.data,
+                cryptocurrencies: data.data,
             },
         };
     } catch (err) {
         return {
             props: {
-                cryptocurencies: [],
+                cryptocurrencies: [],
             },
         };
     }
