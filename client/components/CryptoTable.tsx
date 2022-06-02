@@ -4,8 +4,8 @@ type Props = {
 
 const CryptoTable = ({ children }: Props) => {
     return (
-        <div className="w-10/12 grid justify-center items-center grid-flow-row-dense gap-y-2">
-            <div className="grid grid-cols-crypto-table gap-x-5 py-4 px-2">
+        <div className="w-10/12 grid justify-center items-center gap-y-2">
+            <div className="grid grid-cols-crypto-table-row gap-x-5 py-4 px-2">
                 <div className="place-self-end font-bold">#</div>
                 <div className="place-self-start font-bold">Name</div>
                 <div className="place-self-end font-bold">Price</div>

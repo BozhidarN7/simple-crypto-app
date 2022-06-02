@@ -20,7 +20,7 @@ const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: any) => {
     return (
         <div
             ref={lastCryptoTableRowRef}
-            className="grid grid-cols-crypto-table justify-center items-center gap-x-5 py-4 px-2 hover:bg-gray-50 cursor-pointer"
+            className="grid grid-cols-crypto-table-row justify-center items-center gap-x-5 py-4 px-2 hover:bg-gray-50 cursor-pointer"
         >
             <div className="flex flex-row">
                 <span className="hover:text-orange-400">
@@ -152,7 +152,7 @@ const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: any) => {
                 <span>${formatter.format(coin.quote.USD.market_cap)}</span>
             </div>
             <div className="flex flex-col justify-self-end cursor-text">
-                <span>${coin.quote.USD.volume_24h}</span>
+                <span>${formatter.format(coin.quote.USD.volume_24h)}</span>
             </div>
             <div className="justify-self-end">
                 <span>

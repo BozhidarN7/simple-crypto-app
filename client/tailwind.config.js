@@ -6,7 +6,7 @@ module.exports = {
     theme: {
         extend: {
             gridTemplateColumns: {
-                'crypto-table': 'repeat(9, minmax(max-content, 1fr))',
+                'crypto-table-row': 'repeat(9, minmax(auto, 1fr))',
             },
         },
     },
