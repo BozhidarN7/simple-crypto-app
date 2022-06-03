@@ -30,6 +30,7 @@ const useFetchCrypto = (pageNumber: number) => {
             } catch (err) {
                 console.log(err);
                 setError(true);
+                setLoading(false);
             }
         })();
     }, [pageNumber]);
