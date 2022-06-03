@@ -160,10 +160,11 @@ const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: Props) => {
                 <span>${formatter.format(coin.quote.USD.volume_24h)}</span>
             </div>
             <div className="justify-self-end">
-                <span>
+                <span className="flex text-right">
                     {formatter.format(coin.circulating_supply).split('.')[0]}{' '}
                     {coin.symbol}
                 </span>
+
                 {coin.max_supply ? (
                     <div className="mt-2 w-full bg-gray-100 rounded-full h-2.5">
                         <div
