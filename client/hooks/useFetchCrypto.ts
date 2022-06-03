@@ -1,21 +1,30 @@
 import { useEffect, useState } from 'react';
 
 import { getCryptocurrencies } from 'services/cryptoService';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { cryptocurrenciesAdded } from 'features/cryptocurrenciesSlice';
 
 const useFetchCrypto = (pageNumber: number) => {
-    const [loading, setLoading] = useState(true);
+    const dispatch = useAppDispatch();
+
+    const newCryptocurrencies = useAppSelector(
+        (state) => state.cryptocurrencies.cryptocurrencies
+    );
+
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    const [newCryptocurrencies, setNewCryptocurrencies] = useState<any>();
-    const [hasMore, setHasMore] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
+        if (pageNumber === 0) {
+            return;
+        }
         (async () => {
             try {
                 setLoading(true);
                 setError(false);
-
                 const data = await getCryptocurrencies(pageNumber);
-                setNewCryptocurrencies(data.data);
+                dispatch(cryptocurrenciesAdded(data.data));
                 setLoading(false);
                 setHasMore(data.status.total_count > pageNumber * 10);
             } catch (err) {
@@ -25,7 +34,7 @@ const useFetchCrypto = (pageNumber: number) => {
         })();
     }, [pageNumber]);
 
-    return { loading, error, newCryptocurrencies, hasMore };
+    return { newCryptocurrencies, loading, error, hasMore };
 };
 
 export default useFetchCrypto;

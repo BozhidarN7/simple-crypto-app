@@ -4,7 +4,7 @@ import cryptocurrenciesReducer from 'features/cryptocurrenciesSlice';
 
 export const store = configureStore({
     reducer: {
-        products: cryptocurrenciesReducer,
+        cryptocurrencies: cryptocurrenciesReducer,
     },
 });
 

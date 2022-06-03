@@ -11,7 +11,20 @@ const initialState: CryptocurenciesSliceInterface = {
 const cryptocurenciesSlice = createSlice({
     name: 'cryptocurrencies',
     initialState,
-    reducers: {},
+    reducers: {
+        cryptocurrenciesAdded: (state, action) => {
+            state.cryptocurrencies = Array.from(
+                new Set([
+                    ...state.cryptocurrencies.map((coin: any) =>
+                        JSON.stringify(coin)
+                    ),
+                    ...action.payload.map((coin: any) => JSON.stringify(coin)),
+                ])
+            ).map((coin: any) => JSON.parse(coin));
+        },
+    },
 });
+
+export const { cryptocurrenciesAdded } = cryptocurenciesSlice.actions;
 
 export default cryptocurenciesSlice.reducer;

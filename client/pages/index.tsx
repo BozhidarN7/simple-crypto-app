@@ -1,8 +1,9 @@
 import Head from 'next/head';
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 
 import { getCryptocurrencies } from 'services/cryptoService';
-
+import { useAppDispatch } from 'app/hooks';
+import { cryptocurrenciesAdded } from 'features/cryptocurrenciesSlice';
 import CryptoTable from 'components/CryptoTable';
 import CryptoTableRow from 'components/CryptoTableRow';
 import useFetchCrypto from 'hooks/useFetchCrypto';
@@ -13,7 +14,8 @@ type Props = {
 };
 
 const Home = ({ cryptocurrencies }: Props) => {
-    const [pageNumber, setPageNumber] = useState(1);
+    const dispatch = useAppDispatch();
+    const [pageNumber, setPageNumber] = useState(0);
 
     const { newCryptocurrencies, hasMore, loading, error } =
         useFetchCrypto(pageNumber);
@@ -30,13 +32,17 @@ const Home = ({ cryptocurrencies }: Props) => {
                         setPageNumber((prev) => prev + 1);
                     }
                 },
-                { rootMargin: '200px' }
+                { rootMargin: '0px' }
             );
 
             if (node) observer.current.observe(node);
         },
         [loading, hasMore]
     );
+
+    useEffect(() => {
+        dispatch(cryptocurrenciesAdded(cryptocurrencies));
+    }, []);
 
     if (!cryptocurrencies)
         return (
@@ -67,7 +73,7 @@ const Home = ({ cryptocurrencies }: Props) => {
                 Today's Cryptocurrency Prices by Market Cap
             </h1>
             <CryptoTable>
-                {pageNumber === 1 ? (
+                {pageNumber === 0 ? (
                     cryptocurrencies.map((coin: any, index: number) => {
                         if (index === cryptocurrencies.length - 1) {
                             return (
@@ -102,7 +108,7 @@ const Home = ({ cryptocurrencies }: Props) => {
 
 export async function getStaticProps() {
     try {
-        const pageNumber = 1;
+        const pageNumber = 0;
         const data = await getCryptocurrencies(pageNumber);
 
         return {

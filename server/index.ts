@@ -36,7 +36,6 @@ app.get('/cryptocurencies', async (req: Request, res: Response) => {
             }
         );
         const data = await response.json();
-
         return res.status(200).json(data);
     } catch (err) {
         console.log(err);
