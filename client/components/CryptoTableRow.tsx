@@ -1,6 +1,11 @@
 import Image from 'next/image';
 
-const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: any) => {
+type Props = {
+    coin: any;
+    lastCryptoTableRowRef: null | ((node: HTMLDivElement) => void);
+};
+
+const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: Props) => {
     const formatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
