@@ -1,4 +1,7 @@
 import Image from 'next/image';
+import ParentSize from '@visx/responsive/lib/components/ParentSize';
+
+import CoinBasicPriceChart from 'components/charts/CoinBasicPriceChart';
 
 type Props = {
     coin: any;
@@ -175,6 +178,13 @@ const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: Props) => {
                         ></div>
                     </div>
                 ) : null}
+            </div>
+            <div className="h-10">
+                <ParentSize>
+                    {({ width, height }) => (
+                        <CoinBasicPriceChart width={width} height={height} />
+                    )}
+                </ParentSize>
             </div>
         </div>
     );

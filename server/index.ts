@@ -12,11 +12,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Express + Typescript server');
 });
 
-app.listen(port, () => {
-    console.log(`Server is listening on port: ${port}...`);
-});
-
-app.get('/cryptocurencies', async (req: Request, res: Response) => {
+app.get('/cryptocurrencies', async (req: Request, res: Response) => {
     const queryString = Object.entries(req.query)
         .map((el) => el.join('='))
         .join('&');
@@ -41,4 +37,35 @@ app.get('/cryptocurencies', async (req: Request, res: Response) => {
         console.log(err);
         return res.send('Did not manage to get data');
     }
+});
+
+app.get(
+    '/cryptocurrency/:id/market_chart/last_seven_days',
+    async (req: Request, res: Response) => {
+        const coinId = req.params.id;
+
+        try {
+            const response = await fetch(
+                `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7`
+            );
+
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            const data = await response.json();
+            return res.status(200).json({
+                success: true,
+                count: data.prices.length,
+                data: data.prices,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(400).send('Did not manage to get data!');
+        }
+    }
+);
+
+app.listen(port, () => {
+    console.log(`Server is listening on port: ${port}...`);
 });
