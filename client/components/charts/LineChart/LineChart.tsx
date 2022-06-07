@@ -2,6 +2,11 @@ import { Group } from '@visx/group';
 import { AxisScale } from '@visx/axis';
 import { LinePath } from '@visx/shape';
 
+type DataProps = {
+    date: string;
+    price: number;
+};
+
 type Props = {
     data: any;
     xScale: AxisScale<number>;
@@ -23,11 +28,11 @@ const LineChart = ({
     top,
     left,
 }: Props) => {
-    const getDate = (d: any) => new Date(d[0]);
-    const getStockValue = (d: any) => d.price;
+    const getDate = (d: DataProps) => new Date(d.date);
+    const getStockValue = (d: DataProps) => d.price;
     return (
         <Group left={left || margin.left} top={top || margin.top}>
-            <LinePath
+            <LinePath<DataProps>
                 data={data}
                 x={(d) => xScale(getDate(d)) || 0}
                 y={(d) => yScale(getStockValue(d)) || 0}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { max, min, extent } from 'd3-array';
 import { scaleTime, scaleLinear } from '@visx/scale';
@@ -12,15 +12,22 @@ type Props = {
 };
 
 const CoinBasicPriceChart = ({ width, height }: Props) => {
-    const { data, error } = useSWR(
-        'bitcoin',
-        getCryptocurrencyLastSevenDaysPrice
-    );
-    if (error) {
-        return (
-            <span className="text-right self-end">Loading chart failed!</span>
-        );
-    }
+    const [data, setData] = useState<any>();
+    // const { data, error } = useSWR(
+    //     'bitcoin',
+    //     getCryptocurrencyLastSevenDaysPrice
+    // );
+    // if (error) {
+    //     return (
+    //         <span className="text-right self-end">Loading chart failed!</span>
+    //     );
+    // }
+    useEffect(() => {
+        (async () => {
+            const data = await getCryptocurrencyLastSevenDaysPrice('bitcoin');
+            setData(data);
+        })();
+    }, []);
     const mappedData: any[] = useMemo(() => {
         if (!data) return [];
         return data.data.map((ele: any) => ({
@@ -49,6 +56,8 @@ const CoinBasicPriceChart = ({ width, height }: Props) => {
             nice: true,
         });
     }, [height, mappedData]);
+
+    if (!data) return null;
 
     return (
         <div className="">
