@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import { max, min, extent } from 'd3-array';
 import { scaleTime, scaleLinear } from '@visx/scale';
@@ -9,35 +9,33 @@ import { getCryptocurrencyLastSevenDaysPrice } from 'services/cryptoService';
 type Props = {
     width: number;
     height: number;
+    color: string;
+    coinId: string;
 };
 
-const CoinBasicPriceChart = ({ width, height }: Props) => {
-    const [data, setData] = useState<any>();
-    // const { data, error } = useSWR(
-    //     'bitcoin',
-    //     getCryptocurrencyLastSevenDaysPrice
-    // );
-    // if (error) {
-    //     return (
-    //         <span className="text-right self-end">Loading chart failed!</span>
-    //     );
-    // }
-    useEffect(() => {
-        (async () => {
-            const data = await getCryptocurrencyLastSevenDaysPrice('bitcoin');
-            setData(data);
-        })();
-    }, []);
+const CoinBasicPriceChart = ({ width, height, color, coinId }: Props) => {
+    const { data, error } = useSWR(
+        `${coinId}`,
+        getCryptocurrencyLastSevenDaysPrice.bind(null, coinId)
+    );
+    if (error) {
+        return (
+            <span className="text-right self-end">Loading chart failed!</span>
+        );
+    }
+
     const mappedData: any[] = useMemo(() => {
         if (!data) return [];
-        return data.data.map((ele: any) => ({
-            date: new Date(ele[0]),
-            price: ele[1],
-        }));
+        return data.data?.length
+            ? data.data.map((ele: any) => ({
+                  date: new Date(ele[0]),
+                  price: ele[1],
+              }))
+            : [];
     }, [data]);
 
-    const getDate = (d: any) => new Date(d[0]);
-    const getStockValue = (d: any) => d[1];
+    const getDate = (d: any) => new Date(d.date);
+    const getStockValue = (d: any) => d.price;
 
     const dateScale = useMemo(() => {
         return scaleTime({
@@ -57,14 +55,12 @@ const CoinBasicPriceChart = ({ width, height }: Props) => {
         });
     }, [height, mappedData]);
 
-    if (!data) return null;
-
     return (
         <div className="">
             <svg height={height} width={width}>
                 <LinePath
                     data={mappedData}
-                    stroke="#333"
+                    stroke={color}
                     xScale={dateScale}
                     yScale={priceScale}
                     margin={{ top: 0, right: 0, bottom: 0, left: 0 }}

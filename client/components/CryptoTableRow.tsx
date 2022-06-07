@@ -182,7 +182,16 @@ const CryptoTableRow = ({ coin, lastCryptoTableRowRef }: Props) => {
             <div className="h-10">
                 <ParentSize>
                     {({ width, height }) => (
-                        <CoinBasicPriceChart width={width} height={height} />
+                        <CoinBasicPriceChart
+                            width={width}
+                            height={height}
+                            coinId={coin.name.toLowerCase()}
+                            color={
+                                coin.quote.USD.percent_change_24h >= 0
+                                    ? '#32CD32'
+                                    : '#FF4136'
+                            }
+                        />
                     )}
                 </ParentSize>
             </div>

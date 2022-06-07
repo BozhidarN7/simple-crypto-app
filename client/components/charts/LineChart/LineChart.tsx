@@ -30,6 +30,7 @@ const LineChart = ({
 }: Props) => {
     const getDate = (d: DataProps) => new Date(d.date);
     const getStockValue = (d: DataProps) => d.price;
+
     return (
         <Group left={left || margin.left} top={top || margin.top}>
             <LinePath<DataProps>
